@@ -1,12 +1,12 @@
 name: 'Push on Dev environment'
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'environments/dev/**'
-      - 'modules/**'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'environments/dev/**'
+  #     - 'modules/**'
   workflow_dispatch:
     inputs:
       action:
