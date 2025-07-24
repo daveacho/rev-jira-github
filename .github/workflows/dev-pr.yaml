@@ -13,7 +13,7 @@ env:
   TF_INPUT: false
 
 jobs:
-   pr-infra-check:
+   pr-infra-check-dev:
     runs-on: ubuntu-latest
     permissions:
       id-token: write # Required for OIDC to request the GitHub JWT
