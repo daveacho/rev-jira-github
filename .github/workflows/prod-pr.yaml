@@ -86,11 +86,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const planOutput = fs.readFileSync('terraform/plan-output.txt', 'utf8');
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            const planOutput = fs.readFileSync('environments/prod/plan-output.txt', 'utf8');
+            const output = `#### Terraform Format and Style 🖌(prod)\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️(prod)\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖(prod)\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖(prod)\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Plan</summary>
 

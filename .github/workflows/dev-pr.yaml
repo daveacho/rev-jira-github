@@ -76,6 +76,7 @@ jobs:
         id: plan
         run:  terraform plan -out=tfplan -no-color -lock-timeout=30s > plan-output.txt
         continue-on-error: false # Allow plan to fail for PRs to show changes
+  
 
       # Add a comment to pull requests with plan results
       - name: Add Plan Comment
@@ -86,11 +87,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const planOutput = fs.readFileSync('terraform/plan-output.txt', 'utf8');
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            const planOutput = fs.readFileSync('environments/dev/plan-output.txt', 'utf8');
+            const output = `#### Terraform Format and Style 🖌(dev)\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️(dev)\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖(dev)\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖(dev)\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Plan</summary>
 
