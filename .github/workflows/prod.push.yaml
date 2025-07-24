@@ -19,7 +19,7 @@ env:
   TF_INPUT: false
 
 jobs:
-  terraform:
+  terraform-prod:
     runs-on: ubuntu-latest
     permissions:
       id-token: write # Required for OIDC to request the GitHub JWT
@@ -50,7 +50,6 @@ jobs:
           # terraform_wrapper: false # Disable wrapper to capture plan output
 
       - name: Configure AWS credentials
-        if: github.ref == 'refs/heads/main'
         uses: aws-actions/configure-aws-credentials@v4 # Updated to latest stable version
         env:
           AWS_REGION: eu-west-2
@@ -68,7 +67,7 @@ jobs:
           else
             terraform plan -out=tfplan -no-color -lock-timeout=30s > plan-output.txt
           fi
-        continue-on-error: true
+        continue-on-error: false
 
       # # Run Terraform apply if branch is main
       - name: Terraform Apply or Destroy
