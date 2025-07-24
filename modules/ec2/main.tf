@@ -28,7 +28,7 @@ resource "aws_default_subnet" "default_az2" {
 }
 
 resource "aws_security_group" "myApp" {
-  name        = "myAppSG"
+  name        = "${var.projectName}-${var.environment}myAppSG"
   description = "Allow access on ports 0 to 60000"
   vpc_id      = aws_default_vpc.myApp.id
 
@@ -56,13 +56,13 @@ resource "tls_private_key" "pk" {
 }
 
 resource "aws_key_pair" "pk" {
-  key_name   = "myKey"
+  key_name   = "${var.projectName}-${var.environment}-key"
   public_key = tls_private_key.pk.public_key_openssh
 }
 
 resource "local_file" "pk" {
   content  = tls_private_key.pk.private_key_pem
-  filename = "${aws_key_pair.pk.key_name}.pem"
+  filename = "${aws_key_pair.pk.key_name}.pem" 
 }
 
 data "aws_ami" "ubuntu" {
@@ -97,6 +97,7 @@ resource "aws_instance" "myAppTwo" {
 
   tags = {
     Name = "${var.projectName}-${var.environment}-myAppTwo"
+    Environment = var.environment
   }
 }
 
@@ -112,6 +113,7 @@ resource "aws_instance" "myAppone" {
 
   tags = {
     Name = "${var.projectName}-${var.environment}-myAppone"
+    Environment = var.environment
   }
 }
 
