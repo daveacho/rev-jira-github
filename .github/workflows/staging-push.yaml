@@ -1,12 +1,12 @@
 name: 'Push on Staging environment'
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'environments/staging/**'
-      - 'modules/**'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'environments/staging/**'
+  #     - 'modules/**'
   workflow_dispatch:
     inputs:
       action:

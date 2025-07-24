@@ -1,12 +1,12 @@
 name: 'Push on Prod environment'
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'environments/prod/**'
-      - 'modules/**'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'environments/prod/**'
+  #     - 'modules/**'
   workflow_dispatch:
     inputs:
       action:
