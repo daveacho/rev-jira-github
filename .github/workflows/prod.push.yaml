@@ -1,0 +1,84 @@
+name: 'Push on Prod environment'
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'environments/prod/**'
+      - 'modules/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action (apply or destroy)'
+        required: true
+        default: 'apply'
+
+env:
+  TF_LOG: INFO
+  TF_INPUT: false
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for OIDC to request the GitHub JWT
+      issues: write        # Required to create issue comments
+      pull-requests: write  # Required to interact with pull requests
+      contents: read       # Required for actions/checkout
+    defaults:
+      run:
+        shell: bash
+        working-directory: environments/prod
+
+    env:
+      AWS_REGION: eu-west-2
+      TF_VAR_aws_region: eu-west-2
+      TF_VAR_projectName: rev
+      TF_VAR_environment: prod
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.2"
+          # terraform_wrapper: false # Disable wrapper to capture plan output
+
+      - name: Configure AWS credentials
+        if: github.ref == 'refs/heads/main'
+        uses: aws-actions/configure-aws-credentials@v4 # Updated to latest stable version
+        env:
+          AWS_REGION: eu-west-2
+          AWS_ROLE_ARN: arn:aws:iam::339713055209:role/test-oidc-role
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }} # Replace with your IAM role ARN
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActionsSession
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          if [ "${{ github.event.inputs.action || 'apply' }}" == "destroy" ]; then
+            terraform plan -destroy -out=tfplan -no-color -lock-timeout=30s > plan-output.txt
+          else
+            terraform plan -out=tfplan -no-color -lock-timeout=30s > plan-output.txt
+          fi
+        continue-on-error: true
+
+      # # Run Terraform apply if branch is main
+      - name: Terraform Apply or Destroy
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "${{ github.event.inputs.action || 'apply' }}" == "destroy" ]; then
+            echo "Destroy is not allowed in prod environment"
+            exit 1
+          else
+            terraform apply -auto-approve -lock-timeout=30s tfplan
+          fi
+
+#arn:aws:iam::339713055209:role/test-oidc-role
