@@ -16,7 +16,7 @@ jobs:
   pr-infra-check-dev:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # Required for OIDC to request the GitHub JWT
+      id-token: write ## Required for OIDC to request the GitHub JWT
       issues: write        # Required to create issue comments
       pull-requests: write  # Required to interact with pull requests
       contents: read       # Required for actions/checkout
